@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make A Contribution — LifeCM Sanctuary Project</title>
+    <link rel="stylesheet" href="css/donate.css">
+</head>
+
+<body>
+
+<header class="donate-header">
+    <h1>🏛 BUILD GOD'S HOUSE</h1>
+    <p>LifeCM Sanctuary Project</p>
+    <p class="tagline">Every Stone Counts • Every Gift Builds the Sanctuary</p>
+</header>
+
+<main class="donate-container">
+
+    <!-- ==========================================
+         CAMPAIGN PROGRESS SUMMARY
+         ========================================== -->
+    <section class="summary-card">
+        <h2>Total Raised So Far</h2>
+        <div class="raised-amount" id="totalRaisedDisplay">KSh 0</div>
+        <div class="target-amount">Target: <span id="targetDisplay">KSh 7,500,000</span></div>
+
+        <div class="progress">
+            <div id="progressBar" class="progress-fill"></div>
+        </div>
+        <p class="progress-text" id="progressText">0% Complete</p>
+    </section>
+
+    <!-- ==========================================
+         QUICK STATS
+         ========================================== -->
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Today's Build</div>
+            <div class="stat-value" id="todayRaised">KSh 0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Stones</div>
+            <div class="stat-value" id="totalStones">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Today's Builders</div>
+            <div class="stat-value" id="todayBuilders">0</div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         MAKE A CONTRIBUTION — collapsible card
+         ========================================== -->
+    <section class="donate-form-card" id="donateFormSection">
+
+        <!-- Compact Header (always visible) -->
+        <div class="donate-header-block">
+            <h2>🙏 Make a Contribution</h2>
+
+            <div class="donate-date-stamp">
+                📅 <span id="donateDateStamp">—</span>
+            </div>
+
+            <p class="donate-welcome-message">
+                Thank you for being part of this Project.
+                Your generous contribution is a blessing to us.
+            </p>
+
+            <div class="donate-people-count">
+                👥 <strong id="donatePeopleCount">0</strong> people have contributed
+            </div>
+
+            <button type="button" id="showDonationFormBtn" class="toggle-form-btn">
+                ✨ Contribute Now
+            </button>
+        </div>
+
+        <!-- Expandable Form (hidden by default) -->
+        <div id="donationFormWrapper" class="donation-form-wrapper" style="display:none;">
+
+            <hr class="donate-separator">
+
+            <form id="publicDonationForm">
+
+                <div class="form-group">
+                    <label for="pubPhone">Phone Number *</label>
+                    <input type="tel" id="pubPhone" placeholder="e.g. 0712 345 678" maxlength="20" required>
+                    <span class="field-hint">Used to sync your contribution with the church record.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="pubDonor">Your Name *</label>
+                    <input type="text" id="pubDonor" placeholder="e.g. Jane Wanjiru" maxlength="60" required>
+                    <span class="field-hint">If you've given before, your name will appear automatically.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="pubAmount">Amount (KSh) *</label>
+                    <input type="number" id="pubAmount" placeholder="e.g. 5000" min="1" required>
+                    <span class="stone-preview">Stones: <strong id="pubStones">0</strong></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="pubGroup">Group (optional)</label>
+                    <select id="pubGroup"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="pubComment">Message (optional)</label>
+                    <textarea id="pubComment" rows="2" placeholder="A short prayer or message" maxlength="200"></textarea>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="pubAnonymous">
+                        Keep me anonymous on the public dashboard
+                    </label>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="pubForSomeone">
+                        🙌 Contribute on behalf of someone else
+                    </label>
+                </div>
+
+                <!-- Recipient fields (hidden by default) -->
+                <div id="recipientFields" style="display:none; padding:12px; background:#f0f7ee; border-radius:8px; margin-bottom:16px; border-left:3px solid #4caf50;">
+                    <p style="font-size:12px; color:#2e7d32; margin:0 0 12px 0; font-weight:600;">
+                        Recipient Details
+                    </p>
+
+                    <div class="form-group">
+                        <label for="recipientName">Recipient's Name</label>
+                        <input type="text" id="recipientName" placeholder="Who is this for?" maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientPhone">Recipient's Phone (optional)</label>
+                        <input type="tel" id="recipientPhone" placeholder="e.g. 0722 345 678" maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientGroup">Recipient's Group (optional)</label>
+                        <select id="recipientGroup"></select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 16px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50;">
+                    <h3 style="color: #1b5e20; margin: 0 0 10px;">💳 Pay with M-Pesa</h3>
+                    <p style="font-size: 13px; color: #333; margin: 0 0 12px;">
+                    Enter your details above, then click below to receive a payment prompt on your phone.
+                </p>
+                    <button type="button" id="mpesaPayBtn" style="width:100%; padding:14px; background:#198754; color:#fff; border:none; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer;">
+                    📱 Pay KSh <span id="mpesaAmountLabel">0</span> via M-Pesa
+                    </button>
+                <div id="mpesaStatus" style="margin-top: 10px; font-size: 13px; text-align: center;"></div>
+            </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- ==========================================
+         CONFIRMATION (hidden until after submit)
+         ========================================== -->
+    <!-- ==========================================
+     CONFIRMATION (hidden until after submit)
+     ========================================== -->
+<section id="confirmationCard" class="confirmation-card" style="display:none;">
+
+    <!-- The image that gets captured by html2canvas -->
+    <div id="receiptCaptureArea" class="receipt-capture">
+        <div class="receipt-header">
+            <div class="receipt-logo">🏛</div>
+            <div class="receipt-title">BUILD GOD'S HOUSE</div>
+            <div class="receipt-subtitle">LifeCM Sanctuary Project</div>
+            <div class="receipt-tagline">Every Stone Counts • Every Gift Builds the Sanctuary</div>
+        </div>
+
+        <h2 id="confirmationTitle" class="receipt-heading">✅ Thank You!</h2>
+        <p class="receipt-subtext">Your contribution has been recorded.</p>
+
+    <div class="confirmation-details">
+        <p><strong>Amount:</strong> <span id="confAmount">KSh 0</span></p>
+        <p><strong>Stones:</strong> <span id="confStones">0</span></p>
+        <p id="confGroupLine"><strong>Group:</strong> <span id="confGroup">—</span></p>
+        <p id="confRecipientLine" style="display:none;"><strong>On behalf of:</strong> <span id="confRecipient">—</span></p>
+        <p><strong>Reference:</strong> <span id="confRef">—</span></p>
+        <p><strong>Time:</strong> <span id="confTime">—</span></p>
+    </div>
+
+        <p class="receipt-footer-note">
+            Please forward to the church admin to sync your contribution.
+        </p>
+
+        <div class="receipt-watermark">OFFICIAL RECEIPT</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="confirmation-actions">
+        <button id="downloadReceiptBtn" class="action-btn primary">
+            📸 Download Receipt Image
+        </button>
+    </div>
+
+    <p class="confirmation-note">
+        📸 <strong>Save the image</strong> and post it to the church WhatsApp
+        group so the admin can sync your contribution.
+    </p>
+
+    <button id="pubNewDonationBtn" class="submit-btn secondary">
+        Make Another Contribution
+    </button>
+</section>
+
+    <!-- ==========================================
+     TEXT PREVIEW MODAL
+     ========================================== -->
+<div id="textPreviewModal" class="preview-modal" style="display:none;">
+    <div class="preview-modal-content">
+        <h3>📸 Contribution Details</h3>
+        <p class="preview-hint">
+            The text below has been copied to your clipboard.
+            You can also paste it directly into the church group.
+        </p>
+        <textarea id="previewTextArea" readonly></textarea>
+        <div class="preview-actions">
+            <button id="previewCloseBtn" class="action-btn">Close</button>
+            <button id="previewCopyAgainBtn" class="action-btn primary">Copy Again</button>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<footer class="donate-footer">
+    <p>Powered by LifeCM Church</p>
+    <p class="footer-note">
+        For questions or to sync your contribution, contact the church office.
+    </p>
+</footer>
+
+<script src="js/html2canvas.min.js"></script>
+<script src="js/donate.js"></script>
+
+</body>
+</html>
