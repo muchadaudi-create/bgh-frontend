@@ -1,0 +1,16 @@
+{
+  "master": "1c5b6a41-c233-4163-bafe-f591e40e3afa.png",
+  "dimensions": [
+    1600,
+    1200
+  ],
+  "layers": {
+    "foundation": "foundation.png",
+    "walling": "walling.png",
+    "roof": "roof.png",
+    "windows": "windows.png",
+    "finishing": "finishing.png",
+    "external": "external.png"
+  },
+  "note": "First-pass aligned construction layers. Foundation/walling/roof are clipped master-image pixels; windows/doors, finishing and external works contain planned overlays and require final visual validation."
+}

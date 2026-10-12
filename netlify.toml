@@ -1,0 +1,9 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "LIFECM_CONSUMER_KEY,LIFECM_CONSUMER_SECRET,LIFECM_PASSKEY,LIFECM_SHORTCODE,LIFECM_ENV"
