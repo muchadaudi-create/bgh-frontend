@@ -494,28 +494,22 @@
         statusEl.textContent = "Connecting to Safaricom...";
         statusEl.style.color = "#0d47a1";
 
-        console.log("Button clicked! Starting request...");
-
         try {
             const response = await fetch('https://ripeness-sandbag-whacking.ngrok-free.dev/api/stkpush', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    phone: phone,
-                    amount: amount
-                })
+                body: JSON.stringify({ phone: phone, amount: amount })
             });
 
             const data = await response.json();
-            console.log("Server Response received:", data);
 
             if (data.ResponseCode === "0") {
                 const checkoutId = data.CheckoutRequestID;
                 statusEl.textContent = "Check your phone for the M-Pesa prompt...";
 
-                // Start Polling every 3 seconds
+                // Start Polling
                 let pollCount = 0;
-                const maxPolls = 20; // Stop after 60 seconds
+                const maxPolls = 20; // 60 seconds
 
                 const pollInterval = setInterval(async () => {
                     pollCount++;
@@ -547,21 +541,17 @@
                 }, 3000); // Poll every 3 seconds
 
             } else {
-                // This was missing!
                 throw new Error(data.ResponseDescription || data.error || "Failed to initiate");
             }
         } catch (error) {
-            // This was also missing!
             console.error("FETCH ERROR:", error);
             statusEl.textContent = `❌ Failed to send prompt: ${error.message}`;
             statusEl.style.color = "red";
-            
-            // Re-enable the button so they can try again
             btn.disabled = false;
             btn.textContent = `Pay KSh ${Number(amount).toLocaleString()} via M-Pesa`;
         }
-    }); // Closes the addEventListener("click", ...)
-} // Closes the setupMpesaPayment function
+    });
+}
 
 
         // ==========================================
