@@ -461,75 +461,107 @@
             MPESA PAYMENT
             ========================================== */
         function setupMpesaPayment() {
-            const btn = document.getElementById("mpesaPayBtn");
-            const amountInput = document.getElementById("pubAmount");
-            const mpesaAmountLabel = document.getElementById("mpesaAmountLabel");
+    const btn = document.getElementById("mpesaPayBtn");
+    const amountInput = document.getElementById("pubAmount");
+    const mpesaAmountLabel = document.getElementById("mpesaAmountLabel");
 
-            if (!btn || !amountInput || !mpesaAmountLabel) return;
+    if (!btn || !amountInput || !mpesaAmountLabel) return;
 
-            // Live update the button label as user types
-            amountInput.addEventListener("input", function () {
-                const amount = Number(amountInput.value) || 0;
-                mpesaAmountLabel.textContent = amount.toLocaleString();
+    // Live update the button label as user types
+    amountInput.addEventListener("input", function () {
+        const amount = Number(amountInput.value) || 0;
+        mpesaAmountLabel.textContent = amount.toLocaleString();
+    });
+
+    btn.addEventListener("click", async function () {
+        const phone = document.getElementById("pubPhone").value.trim();
+        const amount = document.getElementById("pubAmount").value;
+        const statusEl = document.getElementById("mpesaStatus");
+
+        // Validation
+        if (!phone) {
+            alert("Please enter your phone number above.");
+            return;
+        }
+        if (!amount || amount <= 0) {
+            alert("Please enter a valid amount above.");
+            return;
+        }
+
+        // Set loading state
+        btn.disabled = true;
+        btn.textContent = "⏳ Sending prompt...";
+        statusEl.textContent = "Connecting to Safaricom...";
+        statusEl.style.color = "#0d47a1";
+
+        console.log("Button clicked! Starting request...");
+
+        try {
+            const response = await fetch('https://ripeness-sandbag-whacking.ngrok-free.dev/api/stkpush', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: phone,
+                    amount: amount
+                })
             });
 
-            btn.addEventListener("click", async function () {
-                const phone = document.getElementById("pubPhone").value.trim();
-                const amount = document.getElementById("pubAmount").value;
-                const statusEl = document.getElementById("mpesaStatus");
+            const data = await response.json();
+            console.log("Server Response received:", data);
 
-                // Validation
-                if (!phone) {
-                    alert("Please enter your phone number above.");
-                    return;
-                }
-                if (!amount || amount <= 0) {
-                    alert("Please enter a valid amount above.");
-                    return;
-                }
+            if (data.ResponseCode === "0") {
+                const checkoutId = data.CheckoutRequestID;
+                statusEl.textContent = "Check your phone for the M-Pesa prompt...";
 
-                // Set loading state
-                btn.disabled = true;
-                btn.textContent = "⏳ Sending prompt...";
-                statusEl.textContent = "Connecting to Safaricom...";
-                statusEl.style.color = "#0d47a1";
+                // Start Polling every 3 seconds
+                let pollCount = 0;
+                const maxPolls = 20; // Stop after 60 seconds
 
-                console.log("Button clicked! Starting request...");
+                const pollInterval = setInterval(async () => {
+                    pollCount++;
+                    try {
+                        const statusResponse = await fetch(`https://ripeness-sandbag-whacking.ngrok-free.dev/api/status/${checkoutId}`);
+                        const statusData = await statusResponse.json();
 
-                try {
-                    const response = await fetch('https://ripeness-sandbag-whacking.ngrok-free.dev/api/stkpush', {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'ngrok-skip-browser-warning': 'true' // <-- Add this line to skip the Ngrok warning page
-                        },
-                        body: JSON.stringify({
-                            phone: phone,
-                            amount: amount
-    })
-});
-
-                    const data = await response.json();
-                    console.log("Server Response received:", data);
-
-                    if (data.ResponseCode === "0") {
-                        console.log("Success! Updating UI...");
-                        statusEl.textContent = "Check your phone for the M-Pesa prompt...";
-                        statusEl.style.color = "#0d47a1";
-                    } else {
-                        throw new Error(data.ResponseDescription || data.error || "Failed to initiate");
+                        if (statusData.status === 'SUCCESS') {
+                            clearInterval(pollInterval);
+                            statusEl.textContent = `✅ Payment Successful! Receipt: ${statusData.receipt}`;
+                            statusEl.style.color = "green";
+                            btn.textContent = "Contribution Complete!";
+                        } else if (statusData.status === 'FAILED') {
+                            clearInterval(pollInterval);
+                            statusEl.textContent = `❌ Failed: ${statusData.message}`;
+                            statusEl.style.color = "red";
+                            btn.disabled = false;
+                            btn.textContent = `Pay KSh ${Number(amount).toLocaleString()} via M-Pesa`;
+                        } else if (pollCount >= maxPolls) {
+                            clearInterval(pollInterval);
+                            statusEl.textContent = "⏳ Timed out. Please check your M-Pesa messages.";
+                            statusEl.style.color = "orange";
+                            btn.disabled = false;
+                            btn.textContent = `Pay KSh ${Number(amount).toLocaleString()} via M-Pesa`;
+                        }
+                    } catch (err) {
+                        console.error("Polling error:", err);
                     }
-                } catch (error) {
-                    console.error("FETCH ERROR:", error);
-                    statusEl.textContent = `❌ Failed to send prompt: ${error.message}`;
-                    statusEl.style.color = "red";
+                }, 3000); // Poll every 3 seconds
 
-                    // Re-enable the button so they can try again
-                    btn.disabled = false;
-                    btn.textContent = `Pay KSh ${Number(amount).toLocaleString()} via M-Pesa`;
-                }
-            }); // Closes the addEventListener("click", ...)
-        } // Closes the setupMpesaPayment function
+            } else {
+                // This was missing!
+                throw new Error(data.ResponseDescription || data.error || "Failed to initiate");
+            }
+        } catch (error) {
+            // This was also missing!
+            console.error("FETCH ERROR:", error);
+            statusEl.textContent = `❌ Failed to send prompt: ${error.message}`;
+            statusEl.style.color = "red";
+            
+            // Re-enable the button so they can try again
+            btn.disabled = false;
+            btn.textContent = `Pay KSh ${Number(amount).toLocaleString()} via M-Pesa`;
+        }
+    }); // Closes the addEventListener("click", ...)
+} // Closes the setupMpesaPayment function
 
 
         // ==========================================
