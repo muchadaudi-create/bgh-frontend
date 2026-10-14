@@ -516,7 +516,11 @@
                     pollCount++;
                     try {
                         // --- FIX 2: Changed to /api/status/ + checkoutId ---
-                        const statusResponse = await fetch(`https://ripeness-sandbag-whacking.ngrok-free.dev/api/status/${checkoutId}`);
+                        const statusResponse = await fetch(`https://ripeness-sandbag-whacking.ngrok-free.dev/api/status/${checkoutId}`, {
+                            headers: { 
+                                'ngrok-skip-browser-warning': 'true' 
+                            }
+                        });
                         const statusData = await statusResponse.json();
 
                         if (statusData.status === 'SUCCESS') {
