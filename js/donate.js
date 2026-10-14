@@ -495,7 +495,8 @@
         statusEl.style.color = "#0d47a1";
 
         try {
-            const response = await fetch('https://ripeness-sandbag-whacking.ngrok-free.dev/api/mpesa/callback', {
+            // --- FIX 1: Changed to /api/stkpush ---
+            const response = await fetch('https://ripeness-sandbag-whacking.ngrok-free.dev/api/stkpush', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone: phone, amount: amount })
@@ -514,7 +515,8 @@
                 const pollInterval = setInterval(async () => {
                     pollCount++;
                     try {
-                        const statusResponse = await fetch(`https://ripeness-sandbag-whacking.ngrok-free.dev/api/mpesa/callback`);
+                        // --- FIX 2: Changed to /api/status/ + checkoutId ---
+                        const statusResponse = await fetch(`https://ripeness-sandbag-whacking.ngrok-free.dev/api/status/${checkoutId}`);
                         const statusData = await statusResponse.json();
 
                         if (statusData.status === 'SUCCESS') {
