@@ -496,12 +496,17 @@
 
         try {
             // --- FIX 1: Changed to /api/stkpush ---
-            const response = await fetch('https://ripeness-sandbag-whacking.ngrok-free.dev/api/stkpush', {
+                        const response = await fetch('http://localhost:3000/api/stkpush', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: phone, amount: amount })
+                body: JSON.stringify({ 
+                    phone: phone, 
+                    amount: amount,
+                    donor: document.getElementById('pubDonor').value,
+                    group: document.getElementById('pubGroup').value,
+                    message: document.getElementById('pubComment').value
+                })
             });
-
             const data = await response.json();
 
             if (data.ResponseCode === "0") {
@@ -516,7 +521,7 @@
                     pollCount++;
                     try {
                         // --- FIX 2: Changed to /api/status/ + checkoutId ---
-                        const statusResponse = await fetch(`https://ripeness-sandbag-whacking.ngrok-free.dev/api/status/${checkoutId}`, {
+                        const statusResponse = await fetch(`http://localhost:3000/api/status/${checkoutId}`, {
                             headers: { 
                                 'ngrok-skip-browser-warning': 'true' 
                             }
